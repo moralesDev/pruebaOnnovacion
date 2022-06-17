@@ -1,19 +1,14 @@
 package com.example.prueba.tecnica.financiero.cliente;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -24,7 +19,6 @@ import org.hibernate.annotations.Type;
 
 import com.example.prueba.tecnica.financiero.cuenta.Cuenta;
 import com.example.prueba.tecnica.financiero.tipoDocumento.TipoDocumento;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "cliente")
@@ -35,7 +29,6 @@ public class Cliente {
 	@Type(type = "uuid-char")
 	private UUID id;
 
-	/* Persona natural */
 	@Column(length = 80)
 	private String nombre;
 
@@ -45,7 +38,6 @@ public class Cliente {
 	@Column
 	private String num_documento;
 
-	/* Persona juridica */
 	@Column(length = 80)
 	private String razon_social;
 
@@ -56,23 +48,25 @@ public class Cliente {
 	@NotBlank(message = "Rut es obligatorio")
 	@Column(unique = true)
 	private String rut;
-	
-	
+
 	@ManyToOne
 	@JoinColumn(name = "tipo_documento")
 	private TipoDocumento tipoDocumento;
-	
-	@JsonIgnore
-	@OneToMany(
-			mappedBy = "cliente",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true
-			)
-	List<Cuenta> cuentas = new ArrayList<>();
+
+	@OneToMany(mappedBy = "cliente")
+	private Set<Cuenta> cuentas = new HashSet<>();
 
 	@Column(columnDefinition = "boolean default true")
 	private boolean blnNatural;
-	
+
+	public Set<Cuenta> getCuentas() {
+		return cuentas;
+	}
+
+	public void setCuentas(Set<Cuenta> cuentas) {
+		this.cuentas = cuentas;
+	}
+
 	public boolean isBlnNatural() {
 		return blnNatural;
 	}
@@ -145,18 +139,6 @@ public class Cliente {
 		this.anno_fundacion = anno_fundacion;
 	}
 
-	public List<Cuenta> getCuentas() {
-		return cuentas;
-	}
-
-	public void setCuentas(List<Cuenta> cuentas) {
-		this.cuentas = cuentas;
-	}
-
-	public void setNuevaCuenta(Cuenta cuenta) {
-		this.cuentas.add(cuenta);
-	}
-
 	public Cliente() {
 		super();
 	}
@@ -173,5 +155,30 @@ public class Cliente {
 		this.blnNatural = blnNatural;
 		this.anno_fundacion = anno_fundacion;
 	}
+
+	public Cliente(String nombre, String apellido, String num_documento,
+			@NotNull @NotBlank(message = "Rut es obligatorio") String rut, TipoDocumento tipoDocumento,
+			boolean blnNatural) {
+		super();
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.num_documento = num_documento;
+		this.rut = rut;
+		this.tipoDocumento = tipoDocumento;
+		this.blnNatural = blnNatural;
+	}
+
+	public Cliente(String razon_social, int anno_fundacion,
+			@NotNull @NotBlank(message = "Rut es obligatorio") String rut, TipoDocumento tipoDocumento,
+			boolean blnNatural) {
+		super();
+		this.razon_social = razon_social;
+		this.anno_fundacion = anno_fundacion;
+		this.rut = rut;
+		this.tipoDocumento = tipoDocumento;
+		this.blnNatural = blnNatural;
+	}
+	
+	
 
 }

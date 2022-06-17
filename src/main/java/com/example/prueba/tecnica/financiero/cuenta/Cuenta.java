@@ -1,5 +1,7 @@
 package com.example.prueba.tecnica.financiero.cuenta;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -8,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,6 +19,8 @@ import org.hibernate.annotations.Type;
 
 import com.example.prueba.tecnica.financiero.cliente.Cliente;
 import com.example.prueba.tecnica.financiero.moneda.Moneda;
+import com.example.prueba.tecnica.financiero.movimiento.Movimiento;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "cuenta")
@@ -40,7 +45,11 @@ public class Cuenta {
 
 	@ManyToOne
 	@JoinColumn(name = "id_cliente")
+	@JsonBackReference
 	private Cliente cliente;
+
+	@OneToMany(mappedBy = "cuenta")
+	private Set<Movimiento> movimientos = new HashSet<>();
 
 	public UUID getId() {
 		return id;
@@ -80,6 +89,14 @@ public class Cuenta {
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
+	}
+
+	public Set<Movimiento> getMovimientos() {
+		return movimientos;
+	}
+
+	public void setMovimientos(Set<Movimiento> movimientos) {
+		this.movimientos = movimientos;
 	}
 
 	public Cuenta() {
