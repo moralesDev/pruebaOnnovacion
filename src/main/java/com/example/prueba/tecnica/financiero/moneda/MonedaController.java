@@ -14,7 +14,7 @@ public class MonedaController {
 	@Autowired
 	private MonedaRepository repo;
 	
-	@GetMapping("/listar")
+	@GetMapping
 	private List<Moneda> getMonedas(){
 		return repo.findAll();
 	}

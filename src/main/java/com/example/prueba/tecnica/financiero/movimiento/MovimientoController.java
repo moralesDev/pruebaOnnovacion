@@ -28,12 +28,12 @@ public class MovimientoController {
 	@Autowired
 	private CuentaRepository cuentaRepo;
 	
-	@GetMapping("/listar")
+	@GetMapping
 	private List<Movimiento> getMovimientos(){
 		return repo.findAll();
 	}
 	
-	@PostMapping("/guardar")
+	@PostMapping
 	private ResponseEntity<?> guardarMovimiento(@Valid @RequestBody Movimiento movimiento){
 		ErrorMessage errorMessage = new ErrorMessage();
 		Optional<Cuenta> cuenta = cuentaRepo.findById(movimiento.getCuenta().getId());
@@ -43,7 +43,7 @@ public class MovimientoController {
 					repo.save(movimiento);
 					return new ResponseEntity<Movimiento>(movimiento,HttpStatus.OK);
 				}else {
-					errorMessage.setError("El valor supera el limite de la cuenta.");
+					errorMessage.setError("El valor supera el límite de la cuenta.");
 				}
 			}else {
 				errorMessage.setError("El tipo de moneda del movimiento es diferente al de la cuenta.");

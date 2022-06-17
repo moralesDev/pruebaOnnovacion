@@ -25,17 +25,17 @@ public class ClienteController {
 	@Autowired
 	private ClienteRepository repo;
 
-	@GetMapping("/listar")
+	@GetMapping
 	private List<Cliente> getClientes() {
 		return repo.findAll();
 	}
 	
-	@GetMapping("/listarPorId/{id}")
+	@GetMapping("{id}")
 	private Optional<Cliente> getClientePorId(@PathVariable UUID id){
 		return repo.findById(id);
 	}
 
-	@PostMapping("/guardar")
+	@PostMapping
 	private ResponseEntity<?> guardarCliente(@Valid @RequestBody Cliente cliente) {
 		ErrorMessage errorMessage = new ErrorMessage();
 
@@ -44,7 +44,6 @@ public class ClienteController {
 			repo.save(cliente);
 			return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 		}
-
 		errorMessage.setError("Ya existe el cliente con el RUT ingresado.");
 		return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.OK);
 	}
